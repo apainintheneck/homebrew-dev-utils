@@ -1,10 +1,10 @@
-# Apainintheneck Dev-utils
+# Brew Dev-utils
 
-## How do I install these formulae?
+A collection of commands a utilities that aim to make developer's lives a bit easier.
 
-`brew install apainintheneck/dev-utils/<formula>`
+## How do I install these commands?
 
-Or `brew tap apainintheneck/dev-utils` and then `brew install <formula>`.
+Run `brew tap apainintheneck/dev-utils`.
 
 ## Documentation
 

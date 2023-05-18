@@ -1,0 +1,93 @@
+#!/usr/bin/env awk -f
+# Run `brew kitchen-sink` to see usage.
+
+BEGIN {
+  build_command_list()
+  parse_args()
+
+  if(!run && !fail_fast && !quiet) {
+    print_usage()
+    exit(0)
+  }
+
+  # Run each command in order and record the exit code.
+  for(idx = 1; idx <= length(command_list); idx++) {
+    if(idx > 1 && !quiet) printf("\n")
+    print(title(command_list[idx]))
+
+    exit_codes[idx] = run_command(command_list[idx])
+    if(fail_fast && exit_codes[idx] != 0) {
+      print("\n" red("Error: ") command_list[idx])
+      exit(exit_codes[idx])
+    }
+  }
+
+  print("\n" title("Summary"))
+  for(idx = 1; idx <= length(command_list); idx++) {
+    line = sprintf("[%3d] %s", exit_codes[idx], command_list[idx])
+    if(exit_codes[idx] == 0) {
+      print(green(line))
+    } else {
+      print(red(line))
+    }
+  }
+}
+
+function run_command(command) {
+  if(quiet) command = command " 1> /dev/null 2> /dev/null"
+  return system(command)
+}
+
+function parse_args(   idx) {
+  for(idx = 1; idx < ARGC; idx++) {
+    if(ARGV[idx] == "fail-fast") {
+      fail_fast = 1
+    } else if(ARGV[idx] == "run") {
+      run = 1
+    } else if(ARGV[idx] == "quiet") {
+      quiet = 1
+    }
+  }
+}
+
+function print_usage(   idx) {
+  print("Usage: brew kitchen-sink [options]")
+  print("")
+  print("Run all of the following commands in order to test")
+  print("everything but the kitchen sink.")
+  print("")
+  print("Command List:")
+  for(idx = 1; idx <= length(command_list); idx++)
+    printf("%d. %s\n", idx, command_list[idx])
+  print("")
+  print("Options:")
+  print("  run               Run all commands in order.")
+  print("  quiet             Suppress command output.")
+  print("  fail-fast         Exit after the first failure.")
+}
+
+function build_command_list(   idx) {
+  command_list[++idx] = "brew typecheck"
+  command_list[++idx] = "brew style"
+  command_list[++idx] = "brew tests"
+  command_list[++idx] = "brew generate-formula-api -n"
+  command_list[++idx] = "brew generate-cask-api -n"
+  command_list[++idx] = "brew api-readall-test"
+  command_list[++idx] = "brew update-test --before=\"$(date -v-1w)\""
+}
+
+function title(str) {
+  return magenta(">>> " str)
+}
+
+function magenta(str) {
+  return "\033[35m" str "\033[0m"
+}
+
+function green(str) {
+  return "\033[32m" str "\033[0m"
+}
+
+function red(str) {
+  return "\033[31m" str "\033[0m"
+}

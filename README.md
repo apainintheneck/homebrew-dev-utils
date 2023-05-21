@@ -8,4 +8,45 @@ Run `brew tap apainintheneck/dev-utils`.
 
 ## Documentation
 
-`brew help`, `man brew` or check [Homebrew's documentation](https://docs.brew.sh).
+### brew api-readall-test
+
+```
+Usage: brew api-readall-test [options]
+
+Test API generation and loading of core formulae and casks.
+
+Note: This requires the core tap(s) to be installed locally,
+HOMEBREW_NO_INSTALL_FROM_API gets set automatically before running and this
+command is slow because it generates and then loads everything.
+
+      --fail-fast                  Exit after the first failure.
+      --formula, --formulae        Only test core formulae.
+      --cask, --casks              Only test core casks.
+  -d, --debug                      Display any debugging information.
+  -q, --quiet                      Make some output more quiet.
+  -v, --verbose                    Make some output more verbose.
+  -h, --help                       Show this message.
+```
+
+### brew kitchen-sink
+
+```
+Usage: brew kitchen-sink [options]
+
+Run all of the following commands in order to test
+everything but the kitchen sink.
+
+Command List:
+1. brew typecheck
+2. brew style
+3. brew tests
+4. brew generate-formula-api -n
+5. brew generate-cask-api -n
+6. brew api-readall-test
+7. brew update-test --before="$(date -v-1w)"
+
+Options:
+  run               Run all commands in order.
+  quiet             Suppress command output.
+  fail-fast         Exit after the first failure.
+```

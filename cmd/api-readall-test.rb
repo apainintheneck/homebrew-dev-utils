@@ -4,6 +4,7 @@
 ENV["HOMEBREW_NO_INSTALL_FROM_API"] = "1"
 
 require "cli/parser"
+require_relative "../lib/hd_utils"
 
 module Homebrew
   def self.api_readall_test_args
@@ -28,24 +29,24 @@ module Homebrew
   def self.api_readall_test
     args = api_readall_test_args.parse
 
-    unless args.cask?
-      require_relative "../lib/api-readall/formula_test"
-      APIReadall::FormulaTest.run(
-        quiet: args.quiet?,
-        verbose: args.verbose?,
-        fail_fast: args.fail_fast?,
-      )
-    end
+    Homebrew.with_no_api_env do
+      unless args.cask?
+        HDUtils::APIReadall::FormulaTest.run(
+          quiet: args.quiet?,
+          verbose: args.verbose?,
+          fail_fast: args.fail_fast?,
+        )
+      end
 
-    puts if !args.formula? && !args.cask?
+      puts if !args.formula? && !args.cask?
 
-    unless args.formula?
-      require_relative "../lib/api-readall/cask_test"
-      APIReadall::CaskTest.run(
-        quiet: args.quiet?,
-        verbose: args.verbose?,
-        fail_fast: args.fail_fast?,
-      )
+      unless args.formula?
+        HDUtils::APIReadall::CaskTest.run(
+          quiet: args.quiet?,
+          verbose: args.verbose?,
+          fail_fast: args.fail_fast?,
+        )
+      end
     end
   end
 end

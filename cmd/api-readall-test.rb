@@ -29,22 +29,24 @@ module Homebrew
   def self.api_readall_test
     args = api_readall_test_args.parse
 
-    unless args.cask?
-      HDUtils::APIReadall::FormulaTest.run(
-        quiet: args.quiet?,
-        verbose: args.verbose?,
-        fail_fast: args.fail_fast?,
-      )
-    end
+    Homebrew.with_no_api_env do
+      unless args.cask?
+        HDUtils::APIReadall::FormulaTest.run(
+          quiet: args.quiet?,
+          verbose: args.verbose?,
+          fail_fast: args.fail_fast?,
+        )
+      end
 
-    puts if !args.formula? && !args.cask?
+      puts if !args.formula? && !args.cask?
 
-    unless args.formula?
-      HDUtils::APIReadall::CaskTest.run(
-        quiet: args.quiet?,
-        verbose: args.verbose?,
-        fail_fast: args.fail_fast?,
-      )
+      unless args.formula?
+        HDUtils::APIReadall::CaskTest.run(
+          quiet: args.quiet?,
+          verbose: args.verbose?,
+          fail_fast: args.fail_fast?,
+        )
+      end
     end
   end
 end

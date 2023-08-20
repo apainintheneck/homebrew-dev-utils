@@ -11,7 +11,6 @@ require "formula"
 module HDUtils
   module StubAPI
     module Formula
-      HDUtils.validate_not_using_api! reason: "mock the formula API"
       unless CoreTap.instance.installed?
         abort "The core formula tap needs to be installed locally to mock the API!"
       end

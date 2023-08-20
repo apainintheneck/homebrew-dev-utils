@@ -11,7 +11,6 @@ require "cask"
 module HDUtils
   module StubAPI
     module Cask
-      HDUtils.validate_not_using_api! reason: "mock the cask API"
       unless CoreCaskTap.instance.installed?
         abort "The core cask tap needs to be installed locally to mock the API!"
       end

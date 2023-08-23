@@ -28,6 +28,23 @@ command is slow because it generates and then loads everything.
   -h, --help                       Show this message.
 ```
 
+### brew branch-compare
+
+```
+Usage: brew branch-compare [options] -- command
+
+Runs a brew command on both the current branch and the main branch and then
+diffs the output of both commands. This helps with debugging and assurance
+testing when making changes to important commands.
+
+Example: brew branch-compare -- deps --installed
+
+  -d, --debug                      Display any debugging information.
+  -q, --quiet                      Make some output more quiet.
+  -v, --verbose                    Make some output more verbose.
+  -h, --help                       Show this message.
+```
+
 ### brew kitchen-sink
 
 ```

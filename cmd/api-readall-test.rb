@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# We will generate the API JSON locally so we don't need the API here.
-ENV["HOMEBREW_NO_INSTALL_FROM_API"] = "1"
-
 require "cli/parser"
 require_relative "../lib/hd_utils"
 

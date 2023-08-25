@@ -39,6 +39,7 @@ testing when making changes to important commands.
 
 Example: brew branch-compare -- deps --installed
 
+      --word-diff                  Show word diff instead of default line diff.
   -d, --debug                      Display any debugging information.
   -q, --quiet                      Make some output more quiet.
   -v, --verbose                    Make some output more verbose.

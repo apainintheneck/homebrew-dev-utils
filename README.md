@@ -1,6 +1,6 @@
 # Brew Dev-utils
 
-A collection of commands a utilities that aim to make developer's lives a bit easier.
+A collection of commands and utilities that aim to make developer's lives a bit easier.
 
 ## How do I install these commands?
 
@@ -37,8 +37,11 @@ Runs a brew command on both the current branch and the main branch and then
 diffs the output of both commands. This helps with debugging and assurance
 testing when making changes to important commands.
 
-Example: brew branch-compare -- deps --installed
+Example: brew branch-compare --quiet -- deps --installed
 
+      --ignore-errors              Continue diff when a command returns a
+                                   non-zero exit code.
+      --with-stderr                Combine stdout and stderr in diff output.
       --word-diff                  Show word diff instead of default line diff.
   -d, --debug                      Display any debugging information.
   -q, --quiet                      Make some output more quiet.

@@ -12,9 +12,11 @@ module Homebrew
         and then diffs the output of both commands. This helps with debugging
         and assurance testing when making changes to important commands.
 
-        Example: `brew branch-compare -- deps --installed`
+        Example: `brew branch-compare --quiet -- deps --installed`
       EOS
 
+      switch "--ignore-errors", description: "Continue diff when a command returns a non-zero exit code."
+      switch "--with-stderr", description: "Combine stdout and stderr in diff output."
       switch "--word-diff", description: "Show word diff instead of default line diff."
 
       named_args :command, min: 1
@@ -31,6 +33,9 @@ module Homebrew
       odie "Unknown command: `brew #{command.first}`"
     end
 
+    quiet_options = args.quiet? ? { out: File::NULL, err: File::NULL } : {}
+    spawn_options = args.with_stderr? ? { err: [:child, :out] } : {}
+
     Dir.chdir(HOMEBREW_REPOSITORY) do
       master_branch = "master"
       current_branch = `git branch --show-current`.strip
@@ -43,17 +48,21 @@ module Homebrew
         master_branch,
         current_branch,
       ].map do |branch|
-        unless system("git checkout #{branch} #{"&>/dev/null" if args.quiet?}")
+        unless system("git checkout #{branch}", **quiet_options)
           odie "error checking out #{branch} branch"
         end
         
         outfile = Tempfile.new(branch)
-        IO.popen({"HOMEBREW_NO_AUTO_UPDATE" => "1"}, [HOMEBREW_BREW_FILE, *command]) do |pipe|
+        IO.popen(
+          {"HOMEBREW_NO_AUTO_UPDATE" => "1"},
+          [HOMEBREW_BREW_FILE, *command],
+          **spawn_options
+        ) do |pipe|
           outfile.write pipe.read
         end
         outfile.close
 
-        unless $CHILD_STATUS.exitstatus.zero?
+        if !args.ignore_errors? && !$CHILD_STATUS.exitstatus.zero?
           odie "failure on #{branch} branch"
         end
 
@@ -75,7 +84,7 @@ module Homebrew
       output_files.each(&:unlink)
     ensure
       # Return user to the correct branch in the event of a failure
-      system("git checkout #{current_branch} &> /dev/null")
+      system("git checkout #{current_branch}", out: File::NULL, err: File::NULL)
     end
   end
 end

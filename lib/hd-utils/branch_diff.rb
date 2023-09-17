@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "tempfile"
+require "tmpdir"
 
 module HDUtils
   module BranchDiff
@@ -60,6 +61,56 @@ module HDUtils
         end
   
         output_files.each(&:unlink)
+      ensure
+        # Return user to the correct branch in the event of a failure
+        system("git checkout #{current_branch}", out: File::NULL, err: File::NULL)
+      end  
+    end
+
+    def self.run_script(script_path, *script_args, quiet:, word_diff:)
+      odie "Script #{script_path} doesn't exist!" unless File.exist?(script_path)
+
+      quiet_options = quiet ? { out: File::NULL, err: File::NULL } : {}
+
+      Dir.chdir(HOMEBREW_REPOSITORY) do
+        master_branch = "master"
+        current_branch = `git branch --show-current`.strip
+
+        if master_branch == current_branch
+          odie "Current branch is the master branch. Switch to a feature branch and try again."
+        end
+
+        output_directories = [
+          master_branch,
+          current_branch,
+        ].map do |branch|
+          unless system("git checkout #{branch}", **quiet_options)
+            odie "error checking out #{branch} branch"
+          end
+
+          tmp_dir = Dir.mktmpdir(branch)
+          at_exit { FileUtils.remove_entry(tmp_dir) }
+
+          command = [HOMEBREW_BREW_FILE, "ruby", "--", script_path, tmp_dir, *script_args].join(" ")
+
+          unless system({"HOMEBREW_NO_AUTO_UPDATE" => "1"}, command)
+            odie "failure on #{branch} branch"
+          end
+
+          tmp_dir
+        end
+
+        master_branch_out_dir, current_branch_out_dir = output_directories
+
+        diff_command = %w[git diff --no-index]
+        diff_command << "--word-diff" if word_diff
+        diff_command << "--no-color" if ENV["HOMEBREW_NO_COLOR"]
+        diff_command << master_branch_out_dir
+        diff_command << current_branch_out_dir
+
+        unless system(*diff_command)
+          Homebrew.failed = true
+        end
       ensure
         # Return user to the correct branch in the event of a failure
         system("git checkout #{current_branch}", out: File::NULL, err: File::NULL)

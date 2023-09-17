@@ -8,5 +8,6 @@ $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
 module HDUtils
   autoload :APIReadall, "hd-utils/api_readall"
+  autoload :BranchDiff, "hd-utils/branch_diff"
   autoload :StubAPI, "hd-utils/stub_api"
 end

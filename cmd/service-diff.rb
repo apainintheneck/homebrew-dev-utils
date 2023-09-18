@@ -26,7 +26,8 @@ module Homebrew
   def self.service_diff
     args = service_diff_args.parse
 
-    script_path = File.expand_path("../scripts/service_diff.rb", __dir__)
+    script_path = File.expand_path("../lib/diff-scripts/service_diff.rb", __dir__)
+    odie "Script #{script_path} doesn't exist!" unless File.exist?(script_path)
 
     script_args =
       if args.tap
@@ -37,9 +38,10 @@ module Homebrew
         ["all"]
       end
 
-    HDUtils::BranchDiff.run_script(
-      script_path,
-      *script_args,
+    command = [HOMEBREW_BREW_FILE, "ruby", "--", script_path, *script_args]
+
+    HDUtils::BranchDiff.diff_directories(
+      command,
       quiet: args.quiet?,
       word_diff: args.word_diff?
     )

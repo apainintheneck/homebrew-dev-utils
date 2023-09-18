@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require "shellwords"
 require "tempfile"
 require "tmpdir"
 
 module HDUtils
   module BranchDiff
-    def self.run_command(command, quiet:, word_diff:, with_stderr: false, ignore_errors: false)
+    # Run a brew command on two branches and compare the output.
+    def self.diff_output(command, quiet:, word_diff:, with_stderr:, ignore_errors:)
       if command.first == "brew"
         odie "`brew` is not needed at the beginning of the subcommand"
       elsif !system("brew command #{command.first}", out: File::NULL, err: File::NULL)
@@ -67,9 +69,13 @@ module HDUtils
       end  
     end
 
-    def self.run_script(script_path, *script_args, quiet:, word_diff:)
-      odie "Script #{script_path} doesn't exist!" unless File.exist?(script_path)
-
+    # Run a shell command on two brew branches (the current one and the master branch).
+    #
+    # 1. For each branch a command is run inside of a temporary directory.
+    # 2. The command then writes files to the temporary directory.
+    # 3. Afterwards the two temporary directories are diffed recursively.
+    def self.diff_directories(command, quiet:, word_diff:)
+      command = Shellwords.join(command)
       quiet_options = quiet ? { out: File::NULL, err: File::NULL } : {}
 
       Dir.chdir(HOMEBREW_REPOSITORY) do
@@ -91,10 +97,10 @@ module HDUtils
           tmp_dir = Dir.mktmpdir(branch)
           at_exit { FileUtils.remove_entry(tmp_dir) }
 
-          command = [HOMEBREW_BREW_FILE, "ruby", "--", script_path, tmp_dir, *script_args].join(" ")
-
-          unless system({"HOMEBREW_NO_AUTO_UPDATE" => "1"}, command)
-            odie "failure on #{branch} branch"
+          Dir.chdir(tmp_dir) do
+            unless system({"HOMEBREW_NO_AUTO_UPDATE" => "1"}, command)
+              odie "failure on #{branch} branch"
+            end
           end
 
           tmp_dir

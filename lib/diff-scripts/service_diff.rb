@@ -6,19 +6,16 @@ require "simulate_system"
 require "tap"
 
 # Expects:
-# 1. Temporary directory that exists
-# 2. Command type from VALID_COMMAND_TYPES
-# 3. Command arg
+# 1. Command type from VALID_COMMAND_TYPES
+# 2. Command arg
 #    - for command type `tap` it should be the name of a tap
 #    - for command type `formula` it should be the name of a formula
 #    - for command type `all` it is NOT necessary
-TMP_DIR, COMMAND_TYPE, COMMAND_ARG, *extra = ARGV
+COMMAND_TYPE, COMMAND_ARG, *extra = ARGV
 
 VALID_COMMAND_TYPES = %w[all tap formula].freeze
 
-if !Dir.exist?(TMP_DIR)
-  odie "Temporary directory `#{TMP_DIR}` does not exist!"
-elsif !VALID_COMMAND_TYPES.include?(COMMAND_TYPE)
+if !VALID_COMMAND_TYPES.include?(COMMAND_TYPE)
   odie "Unknown command type `#{COMMAND_TYPE}`!"
 elsif COMMAND_TYPE == "all" && COMMAND_ARG
   odie "Unexpected command arg `#{COMMAND_ARG}` for `all` command!"
@@ -42,7 +39,7 @@ if formula_files.empty?
   odie "No formulae with service blocks to compare according to the given criteria!"
 end
 
-MACOS_DIR = Pathname(TMP_DIR)/"macos"
+MACOS_DIR = Pathname("macos").expand_path
 MACOS_DIR.mkdir
 
 Homebrew::SimulateSystem.with(os: :macos) do
@@ -63,7 +60,7 @@ Homebrew::SimulateSystem.with(os: :macos) do
   end
 end
 
-LINUX_DIR = Pathname(TMP_DIR)/"linux"
+LINUX_DIR = Pathname("linux").expand_path
 LINUX_DIR.mkdir
 
 Homebrew::SimulateSystem.with(os: :linux) do

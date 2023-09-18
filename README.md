@@ -48,3 +48,23 @@ Example: brew branch-compare --quiet -- deps --installed
   -v, --verbose                    Make some output more verbose.
   -h, --help                       Show this message.
 ```
+
+### brew service-diff
+
+```
+Usage: brew service-diff [options]
+
+Compare the service file generation on macOS and Linux before and after changes
+to brew. This helps with debugging and assurance testing when making changes to
+the brew services DSL.
+
+Note: By default it compares all formula files with services defined.
+
+      --formula                    Run the diff on only one formula.
+      --tap                        Run the diff on only one tap.
+      --word-diff                  Show word diff instead of default line diff.
+  -d, --debug                      Display any debugging information.
+  -q, --quiet                      Make some output more quiet.
+  -v, --verbose                    Make some output more verbose.
+  -h, --help                       Show this message.
+```

@@ -27,7 +27,7 @@ module Homebrew
     args = branch_compare_args.parse
     command = args.named
 
-    HDUtils::BranchDiff.run_command(
+    HDUtils::BranchDiff.diff_output(
       command,
       quiet: args.quiet?,
       word_diff: args.word_diff?,

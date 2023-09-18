@@ -18,14 +18,12 @@ File.open("#{__dir__}/../README.md.new", "w") do |out_file|
 
   Pathname("#{__dir__}/../cmd").children.sort.each do |command_file|
     next unless command_file.executable?
-    next unless command_file.extname == ".rb"
+    next if command_file.extname != ".rb"
 
     command = command_file.basename(".rb").to_s
     help_page = `brew #{command} -h`.strip
 
-    unless $CHILD_STATUS.exitstatus.zero?
-      abort "Invalid command: brew #{command} -h"
-    end
+    abort "Invalid command: brew #{command} -h" unless $CHILD_STATUS.exitstatus.zero?
 
     out_file.write <<~EOS
 

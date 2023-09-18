@@ -15,7 +15,7 @@ COMMAND_TYPE, COMMAND_ARG, *extra = ARGV
 
 VALID_COMMAND_TYPES = %w[all tap formula].freeze
 
-if !VALID_COMMAND_TYPES.include?(COMMAND_TYPE)
+if VALID_COMMAND_TYPES.exclude?(COMMAND_TYPE)
   odie "Unknown command type `#{COMMAND_TYPE}`!"
 elsif COMMAND_TYPE == "all" && COMMAND_ARG
   odie "Unexpected command arg `#{COMMAND_ARG}` for `all` command!"
@@ -35,11 +35,9 @@ formula_files =
   .select { |f| f.service? || f.plist }
   .map(&:path)
 
-if formula_files.empty?
-  odie "No formulae with service blocks to compare according to the given criteria!"
-end
+odie "No formulae with service blocks to compare according to the given criteria!" if formula_files.empty?
 
-MACOS_DIR = Pathname("macos").expand_path
+MACOS_DIR = Pathname("macos").expand_path.freeze
 MACOS_DIR.mkdir
 
 Homebrew::SimulateSystem.with(os: :macos) do
@@ -60,21 +58,21 @@ Homebrew::SimulateSystem.with(os: :macos) do
   end
 end
 
-LINUX_DIR = Pathname("linux").expand_path
+LINUX_DIR = Pathname("linux").expand_path.freeze
 LINUX_DIR.mkdir
 
 Homebrew::SimulateSystem.with(os: :linux) do
   formula_files.each do |formula_file|
     formula = Formulary.factory(formula_file)
 
-    if formula.service? && formula.service.command?
-      outfile = LINUX_DIR/"#{formula.service_name}.service"
-      File.write(outfile, formula.service.to_systemd_unit)
+    next unless formula.service? && formula.service.command?
 
-      if formula.service.timed?
-        outfile = LINUX_DIR/"#{formula.service_name}.timer"
-        File.write(outfile, formula.service.to_systemd_timer)
-      end
+    outfile = LINUX_DIR/"#{formula.service_name}.service"
+    File.write(outfile, formula.service.to_systemd_unit)
+
+    if formula.service.timed?
+      outfile = LINUX_DIR/"#{formula.service_name}.timer"
+      File.write(outfile, formula.service.to_systemd_timer)
     end
   end
 end

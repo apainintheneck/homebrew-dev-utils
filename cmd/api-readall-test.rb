@@ -29,8 +29,8 @@ module Homebrew
     Homebrew.with_no_api_env do
       unless args.cask?
         HDUtils::APIReadall::FormulaTest.run(
-          quiet: args.quiet?,
-          verbose: args.verbose?,
+          quiet:     args.quiet?,
+          verbose:   args.verbose?,
           fail_fast: args.fail_fast?,
         )
       end
@@ -39,8 +39,8 @@ module Homebrew
 
       unless args.formula?
         HDUtils::APIReadall::CaskTest.run(
-          quiet: args.quiet?,
-          verbose: args.verbose?,
+          quiet:     args.quiet?,
+          verbose:   args.verbose?,
           fail_fast: args.fail_fast?,
         )
       end

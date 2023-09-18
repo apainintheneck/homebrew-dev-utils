@@ -28,7 +28,7 @@ module HDUtils
           puts "Read core formula and saw no failures!"
         else
           Homebrew.failed = true
-          noun = error_count == 1 ? "failure" : "failures"
+          noun = (error_count == 1) ? "failure" : "failures"
           puts "Read core formula and saw #{error_count} #{noun}!"
 
           unless quiet

@@ -23,7 +23,7 @@ end
 namespace "readme" do
   task :outdated do
     ruby "scripts/generate_readme.rb"
-    sh "git", "diff", "--no-index", "README.md", "README.md.new" 
+    sh "git", "diff", "--no-index", "README.md", "README.md.new"
   ensure
     rm_f "README.md.new"
   end

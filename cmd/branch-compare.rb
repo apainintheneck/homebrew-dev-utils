@@ -29,10 +29,10 @@ module Homebrew
 
     HDUtils::BranchDiff.diff_output(
       command,
-      quiet: args.quiet?,
-      word_diff: args.word_diff?,
-      with_stderr: args.with_stderr?,
-      ignore_errors: args.ignore_errors?
+      quiet:         args.quiet?,
+      word_diff:     args.word_diff?,
+      with_stderr:   args.with_stderr?,
+      ignore_errors: args.ignore_errors?,
     )
   end
 end

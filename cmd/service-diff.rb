@@ -42,8 +42,8 @@ module Homebrew
 
     HDUtils::BranchDiff.diff_directories(
       command,
-      quiet: args.quiet?,
-      word_diff: args.word_diff?
+      quiet:     args.quiet?,
+      word_diff: args.word_diff?,
     )
   end
 end

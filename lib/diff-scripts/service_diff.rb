@@ -65,7 +65,7 @@ Homebrew::SimulateSystem.with(os: :linux) do
   formula_files.each do |formula_file|
     formula = Formulary.factory(formula_file)
 
-    next unless formula.service? && formula.service.command?
+    next unless formula.service.command?
 
     outfile = LINUX_DIR/"#{formula.service_name}.service"
     File.write(outfile, formula.service.to_systemd_unit)

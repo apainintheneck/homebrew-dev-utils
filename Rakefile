@@ -5,12 +5,12 @@
 #
 
 def log(text)
-  STDERR.puts ">>> #{text}"
+  $stderr.puts ">>> #{text}"
 end
 
 def cmd(*command)
   print "$ "
-  sh *command
+  sh(*command)
 end
 
 def with_test_branch
@@ -47,18 +47,18 @@ end
 
 namespace "lint" do
   task :check do
-    sh "brew", "style", __dir__
+    sh "brew", "style", "apainintheneck/dev-utils"
   end
 
   task :fix do
-    sh "brew", "style", __dir__, "--fix"
+    sh "brew", "style", "apainintheneck/dev-utils", "--fix"
   end
 end
 
 namespace "readme" do
   task :outdated do
     ruby "scripts/generate_readme.rb"
-    sh "git", "diff", "--no-index", "README.md", "README.md.new"
+    sh "diff", "README.md", "README.md.new"
   ensure
     rm_f "README.md.new"
   end

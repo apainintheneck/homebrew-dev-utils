@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-require "english"
+require "English"
 require "pathname"
+
+ANSI_CODE_REGEX = /\e\[(\d+)m/.freeze
 
 File.open("#{__dir__}/../README.md.new", "w") do |out_file|
   out_file.write <<~EOS
@@ -21,7 +23,7 @@ File.open("#{__dir__}/../README.md.new", "w") do |out_file|
     next if command_file.extname != ".rb"
 
     command = command_file.basename(".rb").to_s
-    help_page = `brew #{command} -h`.strip
+    help_page = `brew #{command} -h`.strip.gsub(ANSI_CODE_REGEX, "")
 
     abort "Invalid command: brew #{command} -h" unless $CHILD_STATUS.exitstatus.zero?
 

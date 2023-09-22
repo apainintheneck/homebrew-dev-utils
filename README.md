@@ -68,3 +68,19 @@ Note: By default it compares all formula files with services defined.
   -v, --verbose                    Make some output more verbose.
   -h, --help                       Show this message.
 ```
+
+## Development
+
+- Linting
+  - `rake lint:check`
+  - `rake lint:fix`
+- Readme
+  - `rake readme:outdated`
+  - `rake readme:generate`
+- Integration Tests
+  - `rake test:all`
+    - Runs all of the following tests
+  - `rake test:api-readall-test`
+    - Very slow!
+  - `rake test:branch-compare`
+  - `rake test:service-diff`

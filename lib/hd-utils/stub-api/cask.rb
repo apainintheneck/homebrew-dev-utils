@@ -11,27 +11,20 @@ require "cask"
 module HDUtils
   module StubAPI
     module Cask
-      unless CoreCaskTap.instance.installed?
-        abort "The core cask tap needs to be installed locally to mock the API!"
-      end
+      abort "The core cask tap needs to be installed locally to mock the API!" unless CoreCaskTap.instance.installed?
 
-      NAMES = CoreCaskTap
-        .instance
-        .cask_tokens
-        .freeze
+      NAMES = CoreCaskTap.instance.cask_tokens.freeze
 
       print "Generating cask API ..."
 
       # Generate json representation of all casks.
       ::Cask::Cask.generating_hash!
-      JSON = NAMES
-        .to_h do |cask_name|
-          cask = ::Cask::CaskLoader.load(cask_name)
-          json = JSON.generate(cask.to_hash_with_variations)
-          hash = JSON.parse(json)
-          [hash["token"], hash.except("token")]
-        end
-        .freeze
+      JSON = NAMES.to_h do |cask_name|
+        cask = ::Cask::CaskLoader.load(cask_name)
+        json = JSON.generate(cask.to_hash_with_variations)
+        hash = JSON.parse(json)
+        [hash["token"], hash.except("token")]
+      end.freeze
       ::Cask::Cask.generated_hash!
 
       private_constant :NAMES, :JSON

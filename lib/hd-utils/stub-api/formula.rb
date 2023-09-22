@@ -11,27 +11,20 @@ require "formula"
 module HDUtils
   module StubAPI
     module Formula
-      unless CoreTap.instance.installed?
-        abort "The core formula tap needs to be installed locally to mock the API!"
-      end
+      abort "The core formula tap needs to be installed locally to mock the API!" unless CoreTap.instance.installed?
 
-      NAMES = CoreTap
-        .instance
-        .formula_names
-        .freeze
+      NAMES = CoreTap.instance.formula_names.freeze
 
       print "Generating formulae API ..."
 
       # Generate json representation of all formulas.
       ::Formula.generating_hash!
-      JSON = NAMES
-        .to_h do |formula_name|
-          formula = Formulary.factory(formula_name)
-          json = JSON.generate(formula.to_hash_with_variations)
-          hash = JSON.parse(json)
-          [hash["name"], hash.except("name")]
-        end
-        .freeze
+      JSON = NAMES.to_h do |formula_name|
+        formula = Formulary.factory(formula_name)
+        json = JSON.generate(formula.to_hash_with_variations)
+        hash = JSON.parse(json)
+        [hash["name"], hash.except("name")]
+      end.freeze
       ::Formula.generated_hash!
 
       private_constant :NAMES, :JSON

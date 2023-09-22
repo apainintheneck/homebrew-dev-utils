@@ -3,7 +3,7 @@
 require "env_config"
 
 # Needed to make autoload work (it was choking on relative paths before).
-libdir = File.expand_path(File.dirname(__FILE__))
+libdir = __dir__
 $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
 module HDUtils

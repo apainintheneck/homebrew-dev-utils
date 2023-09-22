@@ -25,6 +25,8 @@ module HDUtils
           odie "Current branch is the master branch. Switch to a feature branch and try again."
         end
 
+        dirty_git_repo_check!
+
         output_files = [
           master_branch,
           current_branch,
@@ -80,6 +82,8 @@ module HDUtils
           odie "Current branch is the master branch. Switch to a feature branch and try again."
         end
 
+        dirty_git_repo_check!
+
         output_directories = [
           master_branch,
           current_branch,
@@ -109,6 +113,17 @@ module HDUtils
         # Return user to the correct branch in the event of a failure
         system("git checkout #{current_branch}", out: File::NULL, err: File::NULL)
       end
+    end
+
+    # Check if the git repo in the current working directory has uncommitted
+    # or untracked files in it and fails if it does.
+    def self.dirty_git_repo_check!
+      return if `git status --short`.strip.empty?
+
+      odie <<~ERROR
+        The Brew repo has changes in progress according to `git status`.
+        Stash or commit your work before running tests.
+      ERROR
     end
   end
 end

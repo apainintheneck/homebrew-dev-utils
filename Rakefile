@@ -14,21 +14,32 @@ def cmd(*command)
 end
 
 def with_test_branch
-  current_directory = Dir.pwd
   brew_directory = `brew --repo`.strip
   test_branch = "test-#{Time.now.to_i}"
 
-  log "Setup"
-  Dir.chdir(brew_directory)
-  sh "git", "checkout", "-b", test_branch
+  Dir.chdir(brew_directory) do
+    current_branch = `git branch --show-current`.strip
 
-  log "Test"
-  yield
-ensure
-  log "Cleanup"
-  sh "git", "checkout", "master"
-  sh "git", "branch", "-d", test_branch
-  Dir.chdir(current_directory)
+    unless `git status --short`.strip.empty?
+      abort <<~ERROR
+        The Brew repo has changes in progress according to `git status`.
+        Stash or commit your work before running tests.
+      ERROR
+    end
+
+    begin
+      log "Setup"
+      sh "git", "branch", test_branch, "master"
+      sh "git", "checkout", test_branch
+
+      log "Test"
+      yield
+    ensure
+      log "Cleanup"
+      sh "git", "checkout", current_branch
+      sh "git", "branch", "-d", test_branch
+    end
+  end
 end
 
 #
@@ -47,11 +58,11 @@ end
 
 namespace "lint" do
   task :check do
-    sh "brew", "style", "apainintheneck/dev-utils"
+    cmd "brew", "style", "apainintheneck/dev-utils"
   end
 
   task :fix do
-    sh "brew", "style", "apainintheneck/dev-utils", "--fix"
+    cmd "brew", "style", "apainintheneck/dev-utils", "--fix"
   end
 end
 

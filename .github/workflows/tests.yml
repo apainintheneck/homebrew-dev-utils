@@ -1,0 +1,21 @@
+name: CI
+on:
+  push:
+    branches: master
+  pull_request:
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Homebrew
+      id: set-up-homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7'
+    - run: rake lint:check
+    - run: rake readme:outdated 

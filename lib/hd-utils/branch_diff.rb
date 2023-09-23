@@ -22,11 +22,11 @@ module HDUtils
 
       quiet_options = quiet ? { out: File::NULL, err: File::NULL } : {}
       spawn_options = with_stderr ? { err: [:child, :out] } : {}
+      benchmark_results = []
       env_variables = {}.tap do |hash|
         hash["HOMEBREW_NO_AUTO_UPDATE"] = "1"
         hash["HOMEBREW_NO_INSTALL_FROM_API"] = "1" if no_api
       end
-      benchmark_results = []
 
       Dir.chdir(HOMEBREW_REPOSITORY) do
         master_branch = "master"
@@ -53,8 +53,14 @@ module HDUtils
           outfile.close
 
           benchmark_results << "#{branch} : #{time.real.round(2)} seconds"
-
           odie "failure on #{branch} branch" if !ignore_errors && !$CHILD_STATUS.exitstatus.zero?
+          if Context.current.debug?
+            puts
+            puts "---Temp File Contents---"
+            puts File.read(outfile.path)
+            puts "------------------------"
+            puts
+          end
 
           outfile
         end
@@ -73,8 +79,7 @@ module HDUtils
 
         if benchmark
           puts
-          puts "Benchmark Results"
-          puts "--------- -------"
+          puts "---Benchmark Results---"
           benchmark_results.each(&method(:puts))
         end
       ensure
@@ -88,9 +93,13 @@ module HDUtils
     # 1. For each branch a command is run inside of a temporary directory.
     # 2. The command then writes files to the temporary directory.
     # 3. Afterwards the two temporary directories are diffed recursively.
-    def self.diff_directories(command, quiet:, word_diff:)
+    def self.diff_directories(command, quiet:, word_diff:, no_api:)
       command = Shellwords.join(command)
       quiet_options = quiet ? { out: File::NULL, err: File::NULL } : {}
+      env_variables = {}.tap do |hash|
+        hash["HOMEBREW_NO_AUTO_UPDATE"] = "1"
+        hash["HOMEBREW_NO_INSTALL_FROM_API"] = "1" if no_api
+      end
 
       Dir.chdir(HOMEBREW_REPOSITORY) do
         master_branch = "master"
@@ -112,7 +121,14 @@ module HDUtils
           at_exit { FileUtils.remove_entry(tmp_dir) }
 
           Dir.chdir(tmp_dir) do
-            odie "failure on #{branch} branch" unless system({ "HOMEBREW_NO_AUTO_UPDATE" => "1" }, command)
+            odie "failure on #{branch} branch" unless system(env_variables, command)
+            if Context.current.debug?
+              puts
+              puts "---Temp Directory Contents---"
+              system("ls", "-l")
+              puts "-----------------------------"
+              puts
+            end
           end
 
           tmp_dir

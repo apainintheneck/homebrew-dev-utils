@@ -37,7 +37,7 @@ def with_test_branch
     ensure
       log "Cleanup"
       sh "git", "checkout", current_branch
-      sh "git", "branch", "-d", test_branch
+      sh "git", "branch", "-D", test_branch
     end
   end
 end
@@ -93,6 +93,13 @@ namespace "test" do
     end
   end
 
+  task :"generate-api-diff" do
+    with_test_branch do
+      cmd "brew", "generate-api-diff", "--cask"
+      cmd "brew", "generate-api-diff", "--formula"
+    end
+  end
+
   task :"service-diff" do
     with_test_branch do
       cmd "brew", "service-diff", "--formula=redis"
@@ -103,6 +110,7 @@ namespace "test" do
     %w[
       test:api-readall-test
       test:branch-compare
+      test:generate-api-diff
       test:service-diff
     ].each_with_index do |task, index|
       puts "--------------------" if index.positive?

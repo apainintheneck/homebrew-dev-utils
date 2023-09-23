@@ -49,10 +49,9 @@ File.open("#{__dir__}/../README.md.new", "w") do |out_file|
       - `rake readme:generate`
     - Integration Tests
       - `rake test:all`
-        - Runs all of the following tests
-      - `rake test:api-readall-test`
-        - Very slow!
+      - `rake test:api-readall-test` (SLOW)
       - `rake test:branch-compare`
+      - `rake test:generate-api-diff` (SLOW)
       - `rake test:service-diff`
   EOS
 end

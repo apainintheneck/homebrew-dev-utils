@@ -55,6 +55,28 @@ running other brew commands simultaneously.
   -h, --help                       Show this message.
 ```
 
+### brew generate-api-diff
+
+```
+Usage: brew generate-api-diff [options]
+
+Compare the API generation before and and after changes to brew. This helps with
+debugging and assurance testing when making changes to the JSON API.
+
+Note: One of the --cask or --formula options is required.
+
+Warning: This command uses git functions on the main brew repo. To be safe avoid
+running other brew commands simultaneously.
+
+      --cask                       Run the diff on only core casks.
+      --formula                    Run the diff on only core formulae.
+      --word-diff                  Show word diff instead of default line diff.
+  -d, --debug                      Display any debugging information.
+  -q, --quiet                      Make some output more quiet.
+  -v, --verbose                    Make some output more verbose.
+  -h, --help                       Show this message.
+```
+
 ### brew service-diff
 
 ```
@@ -86,8 +108,7 @@ running other brew commands simultaneously.
   - `rake readme:generate`
 - Integration Tests
   - `rake test:all`
-    - Runs all of the following tests
-  - `rake test:api-readall-test`
-    - Very slow!
+  - `rake test:api-readall-test` (SLOW)
   - `rake test:branch-compare`
+  - `rake test:generate-api-diff` (SLOW)
   - `rake test:service-diff`

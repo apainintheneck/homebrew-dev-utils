@@ -44,6 +44,7 @@ module Homebrew
       command,
       quiet:     args.quiet?,
       word_diff: args.word_diff?,
+      no_api:    true,
     )
   end
 end

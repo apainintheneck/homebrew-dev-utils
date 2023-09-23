@@ -118,3 +118,31 @@ namespace "test" do
     end
   end
 end
+
+INTEGRATON_TESTS = ".github/workflows/integration_tests.yml"
+RAKE_TEST_REGEX = /^\s+- run:\s+rake\s+test:([a-zA-Z_-]+)\s*$/.freeze
+
+task :"missing-tests" do
+  abort "Missing integration test file: #{INTEGRATON_TESTS}" unless File.exist?(INTEGRATON_TESTS)
+
+  integration_tests = File.foreach(INTEGRATON_TESTS).map do |line|
+    line[RAKE_TEST_REGEX, 1]
+  end.compact
+
+  tap_commands = Dir.children("cmd").map do |file|
+    file.chomp(".rb")
+  end
+
+  missing_tests = tap_commands - integration_tests
+
+  unless missing_tests.empty?
+    missing_test_list = missing_tests.map { |test| "- #{test}" }.join("\n")
+
+    abort <<~EOS
+      Missing integration tests for the following commands:
+      #{missing_test_list}
+
+      Add tests to the #{INTEGRATON_TESTS} file.
+    EOS
+  end
+end

@@ -13,6 +13,10 @@ jobs:
     - name: Set up Homebrew
       id: set-up-homebrew
       uses: Homebrew/actions/setup-homebrew@master
+      with:
+        core: false
+        cask: false
+        test-bot: false
 
     - name: Cache Homebrew Bundler RubyGems
       id: cache
@@ -31,6 +35,11 @@ jobs:
       with:
         ruby-version: '2.7'
 
-    - run: rake lint:check
+    - name: Lint Ruby code
+      run: rake lint:check
 
-    - run: rake readme:outdated 
+    - name: Check if readme is outdated
+      run: rake readme:outdated
+
+    - name: Check for missing integration tests
+      run: rake missing-tests

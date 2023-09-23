@@ -1,0 +1,31 @@
+name: CI
+on:
+  schedule:
+  - cron: '0 10 * * Sun'
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: macos-latest
+    steps:
+    - name: Set up Homebrew
+      id: set-up-homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+      with:
+        core: true
+        cask: true
+        test-bot: false
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7'
+
+    - run: rake test:api-readall-test
+
+    - run: rake test:branch-compare
+
+    - run: rake test:generate-api-diff
+
+    - run: rake test:service-diff

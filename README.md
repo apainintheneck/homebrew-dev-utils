@@ -43,6 +43,9 @@ Example: brew branch-compare --quiet -- deps --installed
                                    non-zero exit code.
       --with-stderr                Combine stdout and stderr in diff output.
       --word-diff                  Show word diff instead of default line diff.
+      --time                       Benchmark the command on both branches.
+      --local                      Only load formula/cask from local taps not
+                                   the API.
   -d, --debug                      Display any debugging information.
   -q, --quiet                      Make some output more quiet.
   -v, --verbose                    Make some output more verbose.

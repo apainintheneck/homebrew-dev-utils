@@ -6,6 +6,11 @@ require "tmpdir"
 
 module HDUtils
   module BranchDiff
+    WARNING_MESSAGE = <<~EOS.chomp.freeze
+      Warning: This command uses git functions on the main brew repo.
+      To be safe avoid running other brew commands simultaneously.
+    EOS
+
     # Run a brew command on two branches and compare the output.
     def self.diff_output(command, quiet:, word_diff:, with_stderr:, ignore_errors:)
       if command.first == "brew"

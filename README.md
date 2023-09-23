@@ -39,6 +39,9 @@ testing when making changes to important commands.
 
 Example: brew branch-compare --quiet -- deps --installed
 
+Warning: This command uses git functions on the main brew repo. To be safe avoid
+running other brew commands simultaneously.
+
       --ignore-errors              Continue diff when a command returns a
                                    non-zero exit code.
       --with-stderr                Combine stdout and stderr in diff output.
@@ -58,7 +61,8 @@ Compare the service file generation on macOS and Linux before and after changes
 to brew. This helps with debugging and assurance testing when making changes to
 the brew services DSL.
 
-Note: By default it compares all formula files with services defined.
+Warning: This command uses git functions on the main brew repo. To be safe avoid
+running other brew commands simultaneously.
 
       --formula                    Run the diff on only one formula.
       --tap                        Run the diff on only one tap.

@@ -39,7 +39,7 @@ testing when making changes to important commands.
 
 Example: brew branch-compare --quiet -- deps --installed
 
-Warning: This command uses git functions on the main brew repo. To be safe avoid
+Warning: This command runs git commands on the main brew repo. To be safe avoid
 running other brew commands simultaneously.
 
       --ignore-errors              Continue diff when a command returns a
@@ -65,7 +65,7 @@ debugging and assurance testing when making changes to the JSON API.
 
 Note: One of the --cask or --formula options is required.
 
-Warning: This command uses git functions on the main brew repo. To be safe avoid
+Warning: This command runs git commands on the main brew repo. To be safe avoid
 running other brew commands simultaneously.
 
       --cask                       Run the diff on only core casks.
@@ -86,7 +86,7 @@ Compare the service file generation on macOS and Linux before and after changes
 to brew. This helps with debugging and assurance testing when making changes to
 the brew services DSL.
 
-Warning: This command uses git functions on the main brew repo. To be safe avoid
+Warning: This command runs git commands on the main brew repo. To be safe avoid
 running other brew commands simultaneously.
 
       --formula                    Run the diff on only one formula.

@@ -8,7 +8,7 @@ require "tmpdir"
 module HDUtils
   module BranchDiff
     WARNING_MESSAGE = <<~EOS.chomp.freeze
-      Warning: This command uses git functions on the main brew repo.
+      Warning: This command runs git commands on the main brew repo.
       To be safe avoid running other brew commands simultaneously.
     EOS
 

@@ -12,7 +12,7 @@ module Homebrew
         and after changes to brew. This helps with debugging and assurance
         testing when making changes to the `brew services` DSL.
 
-        Note: By default it compares all formula files with services defined.
+        #{HDUtils::BranchDiff::WARNING_MESSAGE}
       EOS
 
       flag "--formula=", description: "Run the diff on only one formula."

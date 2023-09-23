@@ -13,6 +13,8 @@ module Homebrew
         and assurance testing when making changes to important commands.
 
         Example: `brew branch-compare --quiet -- deps --installed`
+
+        #{HDUtils::BranchDiff::WARNING_MESSAGE}
       EOS
 
       switch "--ignore-errors", description: "Continue diff when a command returns a non-zero exit code."

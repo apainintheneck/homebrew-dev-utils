@@ -20,6 +20,8 @@ module Homebrew
       switch "--ignore-errors", description: "Continue diff when a command returns a non-zero exit code."
       switch "--with-stderr", description: "Combine stdout and stderr in diff output."
       switch "--word-diff", description: "Show word diff instead of default line diff."
+      switch "--time", description: "Benchmark the command on both branches."
+      switch "--local", description: "Only load formula/cask from local taps not the API."
 
       named_args :command, min: 1
     end
@@ -35,6 +37,8 @@ module Homebrew
       word_diff:     args.word_diff?,
       with_stderr:   args.with_stderr?,
       ignore_errors: args.ignore_errors?,
+      no_api:        args.local?,
+      benchmark:     args.time?,
     )
   end
 end

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "benchmark"
 require "shellwords"
 require "tempfile"
 require "tmpdir"
@@ -12,7 +13,7 @@ module HDUtils
     EOS
 
     # Run a brew command on two branches and compare the output.
-    def self.diff_output(command, quiet:, word_diff:, with_stderr:, ignore_errors:)
+    def self.diff_output(command, quiet:, word_diff:, with_stderr:, ignore_errors:, no_api:, benchmark:)
       if command.first == "brew"
         odie "`brew` is not needed at the beginning of the subcommand"
       elsif !system("brew command #{command.first}", out: File::NULL, err: File::NULL)
@@ -21,6 +22,11 @@ module HDUtils
 
       quiet_options = quiet ? { out: File::NULL, err: File::NULL } : {}
       spawn_options = with_stderr ? { err: [:child, :out] } : {}
+      env_variables = {}.tap do |hash|
+        hash["HOMEBREW_NO_AUTO_UPDATE"] = "1"
+        hash["HOMEBREW_NO_INSTALL_FROM_API"] = "1" if no_api
+      end
+      benchmark_results = []
 
       Dir.chdir(HOMEBREW_REPOSITORY) do
         master_branch = "master"
@@ -39,14 +45,14 @@ module HDUtils
           odie "error checking out #{branch} branch" unless system("git checkout #{branch}", **quiet_options)
 
           outfile = Tempfile.new(branch)
-          IO.popen(
-            { "HOMEBREW_NO_AUTO_UPDATE" => "1" },
-            [HOMEBREW_BREW_FILE, *command],
-            **spawn_options,
-          ) do |pipe|
-            outfile.write pipe.read
+          time = Benchmark.measure do
+            IO.popen(env_variables, [HOMEBREW_BREW_FILE, *command], **spawn_options) do |pipe|
+              outfile.write pipe.read
+            end
           end
           outfile.close
+
+          benchmark_results << "#{branch} : #{time.real.round(2)} seconds"
 
           odie "failure on #{branch} branch" if !ignore_errors && !$CHILD_STATUS.exitstatus.zero?
 
@@ -64,6 +70,13 @@ module HDUtils
         Homebrew.failed = true unless system(*diff_command)
 
         output_files.each(&:unlink)
+
+        if benchmark
+          puts
+          puts "Benchmark Results"
+          puts "--------- -------"
+          benchmark_results.each(&method(:puts))
+        end
       ensure
         # Return user to the correct branch in the event of a failure
         system("git checkout #{current_branch}", out: File::NULL, err: File::NULL)

@@ -9,7 +9,7 @@ def log(text)
 end
 
 def cmd(*command)
-  print "$ "
+  $stderr.print "$ "
   sh(*command)
 end
 

@@ -30,13 +30,13 @@ def with_test_branch
     begin
       log "Setup"
       sh "git", "branch", test_branch, "master"
-      sh "git", "checkout", test_branch
+      sh "git", "switch", test_branch
 
       log "Test"
       yield
     ensure
       log "Cleanup"
-      sh "git", "checkout", current_branch
+      sh "git", "switch", current_branch
       sh "git", "branch", "-D", test_branch
     end
   end
@@ -89,20 +89,20 @@ namespace "test" do
 
   task :"branch-compare" do
     with_test_branch do
-      cmd "brew", "branch-compare", "--", "help"
+      cmd "brew", "branch-compare", "--debug", "--", "help"
     end
   end
 
   task :"generate-api-diff" do
     with_test_branch do
-      cmd "brew", "generate-api-diff", "--cask"
-      cmd "brew", "generate-api-diff", "--formula"
+      cmd "brew", "generate-api-diff", "--debug", "--cask"
+      cmd "brew", "generate-api-diff", "--debug", "--formula"
     end
   end
 
   task :"service-diff" do
     with_test_branch do
-      cmd "brew", "service-diff", "--formula=redis"
+      cmd "brew", "service-diff", "--debug", "--formula=redis"
     end
   end
 

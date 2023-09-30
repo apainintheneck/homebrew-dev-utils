@@ -42,7 +42,7 @@ module HDUtils
           master_branch,
           current_branch,
         ].map do |branch|
-          odie "error checking out #{branch} branch" unless system("git checkout #{branch}", **quiet_options)
+          odie "error checking out #{branch} branch" unless system("git switch #{branch}", **quiet_options)
 
           outfile = Tempfile.new(branch)
           time = Benchmark.measure do
@@ -65,14 +65,7 @@ module HDUtils
           outfile
         end
 
-        master_branch_outfile, current_branch_outfile = output_files.map(&:path)
-
-        diff_command = %w[git diff --no-index]
-        diff_command << "--word-diff" if word_diff
-        diff_command << "--no-color" if ENV["HOMEBREW_NO_COLOR"]
-        diff_command << master_branch_outfile
-        diff_command << current_branch_outfile
-
+        diff_command = diff_command(*output_files.map(&:path), word_diff: word_diff)
         Homebrew.failed = true unless system(*diff_command)
 
         output_files.each(&:unlink)
@@ -84,7 +77,7 @@ module HDUtils
         end
       ensure
         # Return user to the correct branch in the event of a failure
-        system("git checkout #{current_branch}", out: File::NULL, err: File::NULL)
+        system("git switch #{current_branch}", out: File::NULL, err: File::NULL)
       end
     end
 
@@ -115,7 +108,7 @@ module HDUtils
           master_branch,
           current_branch,
         ].map do |branch|
-          odie "error checking out #{branch} branch" unless system("git checkout #{branch}", **quiet_options)
+          odie "error checking out #{branch} branch" unless system("git switch #{branch}", **quiet_options)
 
           tmp_dir = Dir.mktmpdir(branch)
           at_exit { FileUtils.remove_entry(tmp_dir) }
@@ -134,18 +127,11 @@ module HDUtils
           tmp_dir
         end
 
-        master_branch_out_dir, current_branch_out_dir = output_directories
-
-        diff_command = %w[git diff --no-index]
-        diff_command << "--word-diff" if word_diff
-        diff_command << "--no-color" if ENV["HOMEBREW_NO_COLOR"]
-        diff_command << master_branch_out_dir
-        diff_command << current_branch_out_dir
-
+        diff_command = diff_command(*output_directories, word_diff: word_diff)
         Homebrew.failed = true unless system(*diff_command)
       ensure
         # Return user to the correct branch in the event of a failure
-        system("git checkout #{current_branch}", out: File::NULL, err: File::NULL)
+        system("git switch #{current_branch}", out: File::NULL, err: File::NULL)
       end
     end
 
@@ -156,8 +142,21 @@ module HDUtils
 
       odie <<~ERROR
         The Brew repo has changes in progress according to `git status`.
-        Stash or commit your work before running tests.
+        Stash or commit your work before running this command.
       ERROR
     end
+
+    def self.diff_command(file_or_dir_1, file_or_dir_2, word_diff: false)
+      %w[git].tap do |args|
+        args << "--no-pager" unless $stdout.tty?
+        args << "diff" << "--no-index"
+        args << "--word-diff" if word_diff
+        args << "--no-color" if ENV["HOMEBREW_NO_COLOR"]
+        args << file_or_dir_1
+        args << file_or_dir_2
+      end
+    end
+
+    private_class_method :dirty_git_repo_check!, :diff_command
   end
 end

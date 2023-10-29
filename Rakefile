@@ -102,7 +102,7 @@ namespace "test" do
 
   task :"service-diff" do
     with_test_branch do
-      cmd "brew", "service-diff", "--debug", "--formula=redis"
+      cmd "brew", "service-diff", "--debug"
     end
   end
 
@@ -119,13 +119,13 @@ namespace "test" do
   end
 end
 
-INTEGRATON_TESTS = ".github/workflows/integration_tests.yml"
+INTEGRATION_TESTS_FILE = ".github/workflows/integration_tests.yml"
 RAKE_TEST_REGEX = /^\s+- run:\s+rake\s+test:([a-zA-Z_-]+)\s*$/.freeze
 
 task :"missing-tests" do
-  abort "Missing integration test file: #{INTEGRATON_TESTS}" unless File.exist?(INTEGRATON_TESTS)
+  abort "Missing integration test file: #{INTEGRATION_TESTS_FILE}" unless File.exist?(INTEGRATION_TESTS_FILE)
 
-  integration_tests = File.foreach(INTEGRATON_TESTS).map do |line|
+  integration_tests = File.foreach(INTEGRATION_TESTS_FILE).map do |line|
     line[RAKE_TEST_REGEX, 1]
   end.compact
 

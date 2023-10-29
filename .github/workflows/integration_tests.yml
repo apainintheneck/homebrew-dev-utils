@@ -1,9 +1,14 @@
-name: CI
+name: Integration Tests
 on:
   schedule:
   - cron: '0 10 * * Sun'
 permissions:
   contents: read
+
+env:
+  HOMEBREW_DEVELOPER: 1
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_ENV_HINTS: 1
 
 jobs:
   tests:

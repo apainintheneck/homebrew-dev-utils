@@ -23,7 +23,7 @@ module Homebrew
       switch "--time", description: "Benchmark the command on both branches."
       switch "--local", description: "Only load formula/cask from local taps not the API."
 
-      named_args :command, min: 1
+      named_args :command, number: 1
     end
   end
 

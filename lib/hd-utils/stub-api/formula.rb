@@ -21,7 +21,7 @@ module HDUtils
       ::Formula.generating_hash!
       JSON = NAMES.to_h do |formula_name|
         formula = Formulary.factory(formula_name)
-        json = JSON.generate(formula.to_hash_with_variations)
+        json = JSON.generate(formula.to_api_hash)
         hash = JSON.parse(json)
         [hash["name"], hash.except("name")]
       end.freeze

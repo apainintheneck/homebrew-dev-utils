@@ -71,6 +71,8 @@ running other brew commands simultaneously.
       --cask                       Run the diff on only core casks.
       --formula                    Run the diff on only core formulae.
       --word-diff                  Show word diff instead of default line diff.
+      --stat                       Shows condensed output based on git
+                                   diff --stat
   -d, --debug                      Display any debugging information.
   -q, --quiet                      Make some output more quiet.
   -v, --verbose                    Make some output more verbose.
@@ -92,6 +94,8 @@ running other brew commands simultaneously.
       --formula                    Run the diff on only one formula.
       --tap                        Run the diff on only one tap.
       --word-diff                  Show word diff instead of default line diff.
+      --stat                       Shows condensed output based on git
+                                   diff --stat
   -d, --debug                      Display any debugging information.
   -q, --quiet                      Make some output more quiet.
   -v, --verbose                    Make some output more verbose.

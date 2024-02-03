@@ -3,7 +3,7 @@
 require "English"
 require "pathname"
 
-ANSI_CODE_REGEX = /\e\[(\d+)m/.freeze
+ANSI_CODE_REGEX = /\e\[(\d+)m/
 
 File.open("#{__dir__}/../README.md.new", "w") do |out_file|
   out_file.write <<~EOS

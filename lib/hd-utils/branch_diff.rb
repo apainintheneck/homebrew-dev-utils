@@ -86,7 +86,7 @@ module HDUtils
     # 1. For each branch a command is run inside of a temporary directory.
     # 2. The command then writes files to the temporary directory.
     # 3. Afterwards the two temporary directories are diffed recursively.
-    def self.diff_directories(command, quiet:, word_diff:, no_api:)
+    def self.diff_directories(command, quiet:, word_diff:, no_api:, stat:)
       command = Shellwords.join(command)
       quiet_options = quiet ? { out: File::NULL, err: File::NULL } : {}
       env_variables = {}.tap do |hash|
@@ -127,7 +127,7 @@ module HDUtils
           tmp_dir
         end
 
-        diff_command = diff_command(*output_directories, word_diff: word_diff)
+        diff_command = diff_command(*output_directories, word_diff: word_diff, stat: stat)
         Homebrew.failed = true unless system(*diff_command)
       ensure
         # Return user to the correct branch in the event of a failure
@@ -138,19 +138,26 @@ module HDUtils
     # Check if the git repo in the current working directory has uncommitted
     # or untracked files in it and fails if it does.
     def self.dirty_git_repo_check!
-      return if `git status --short`.strip.empty?
+      status = `git status --short`.strip
+      return if status.empty?
 
       odie <<~ERROR
         The Brew repo has changes in progress according to `git status`.
         Stash or commit your work before running this command.
+
+        -----
+        $ git status --short
+        #{status}
+        -----
       ERROR
     end
 
-    def self.diff_command(file_or_dir_1, file_or_dir_2, word_diff: false)
+    def self.diff_command(file_or_dir_1, file_or_dir_2, word_diff: false, stat: false)
       %w[git].tap do |args|
         args << "--no-pager" unless $stdout.tty?
         args << "diff" << "--no-index"
         args << "--word-diff" if word_diff
+        args << "--stat" if stat
         args << "--no-color" if ENV["HOMEBREW_NO_COLOR"]
         args << file_or_dir_1
         args << file_or_dir_2

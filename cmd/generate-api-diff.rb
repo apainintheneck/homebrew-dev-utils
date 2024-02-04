@@ -20,6 +20,9 @@ module Homebrew
       switch "--cask", description: "Run the diff on only core casks."
       switch "--formula", description: "Run the diff on only core formulae."
       switch "--word-diff", description: "Show word diff instead of default line diff."
+      switch "--stat", description: "Shows condensed output based on `git diff --stat`"
+
+      conflicts "--word-diff", "--stat"
 
       conflicts "--cask", "--formula"
     end
@@ -42,6 +45,7 @@ module Homebrew
       command,
       quiet:     args.quiet?,
       word_diff: args.word_diff?,
+      stat:      args.stat?,
       no_api:    true,
     )
   end

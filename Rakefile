@@ -20,10 +20,16 @@ def with_test_branch
   Dir.chdir(brew_directory) do
     current_branch = `git branch --show-current`.strip
 
-    unless `git status --short`.strip.empty?
+    status = `git status --short`.strip
+    unless status.empty?
       abort <<~ERROR
         The Brew repo has changes in progress according to `git status`.
         Stash or commit your work before running tests.
+
+        -----
+        $ git status --short
+        #{status}
+        -----
       ERROR
     end
 
@@ -120,7 +126,7 @@ namespace "test" do
 end
 
 INTEGRATION_TESTS_FILE = ".github/workflows/integration_tests.yml"
-RAKE_TEST_REGEX = /^\s+- run:\s+rake\s+test:([a-zA-Z_-]+)\s*$/.freeze
+RAKE_TEST_REGEX = /^\s+- run:\s+rake\s+test:([a-zA-Z_-]+)\s*$/
 
 task :"missing-tests" do
   abort "Missing integration test file: #{INTEGRATION_TESTS_FILE}" unless File.exist?(INTEGRATION_TESTS_FILE)

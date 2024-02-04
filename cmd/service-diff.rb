@@ -18,8 +18,10 @@ module Homebrew
       flag "--formula=", description: "Run the diff on only one formula."
       flag "--tap=", description: "Run the diff on only one tap."
       switch "--word-diff", description: "Show word diff instead of default line diff."
+      switch "--stat", description: "Shows condensed output based on `git diff --stat`"
 
       conflicts "--tap=", "--formula="
+      conflicts "--word-diff", "--stat"
     end
   end
 
@@ -44,6 +46,7 @@ module Homebrew
       command,
       quiet:     args.quiet?,
       word_diff: args.word_diff?,
+      stat:      args.stat?,
       no_api:    true,
     )
   end

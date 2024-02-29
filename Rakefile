@@ -131,9 +131,9 @@ RAKE_TEST_REGEX = /^\s+- run:\s+rake\s+test:([a-zA-Z_-]+)\s*$/
 task :"missing-tests" do
   abort "Missing integration test file: #{INTEGRATION_TESTS_FILE}" unless File.exist?(INTEGRATION_TESTS_FILE)
 
-  integration_tests = File.foreach(INTEGRATION_TESTS_FILE).map do |line|
+  integration_tests = File.foreach(INTEGRATION_TESTS_FILE).filter_map do |line|
     line[RAKE_TEST_REGEX, 1]
-  end.compact
+  end
 
   tap_commands = Dir.children("cmd").map do |file|
     file.chomp(".rb")

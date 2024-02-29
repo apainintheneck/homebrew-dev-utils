@@ -29,16 +29,11 @@ jobs:
         bundler-cache: true
 
     - run: rake lint:check
-      continue-on-error: true
 
     - run: rake test:api-readall-test
-      continue-on-error: true
 
     - run: rake test:branch-compare
-      continue-on-error: true
 
     - run: rake test:generate-api-diff
-      continue-on-error: true
 
     - run: rake test:service-diff
-      continue-on-error: true

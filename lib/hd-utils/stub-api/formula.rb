@@ -38,7 +38,7 @@ module HDUtils
       end
 
       def self.load_from_api(name)
-        Formulary::FormulaAPILoader
+        Formulary::FromAPILoader
           .new(name)
           .get_formula(:stable)
       end

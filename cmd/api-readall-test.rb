@@ -26,6 +26,8 @@ module Homebrew
   def self.api_readall_test
     args = api_readall_test_args.parse
 
+    ENV.delete("HOMEBREW_INTERNAL_JSON_V3")
+
     Homebrew.with_no_api_env do
       unless args.cask?
         HDUtils::APIReadall::FormulaTest.run(

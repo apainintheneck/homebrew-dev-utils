@@ -31,6 +31,8 @@ module Homebrew
   def self.generate_api_diff
     args = generate_api_diff_args.parse
 
+    ENV.delete("HOMEBREW_INTERNAL_JSON_V3")
+
     command =
       if args.formula?
         [HOMEBREW_BREW_FILE, "generate-formula-api"]

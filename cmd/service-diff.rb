@@ -28,6 +28,8 @@ module Homebrew
   def self.service_diff
     args = service_diff_args.parse
 
+    ENV.delete("HOMEBREW_INTERNAL_JSON_V3")
+
     script_path = File.expand_path("../lib/diff-scripts/service_diff.rb", __dir__)
     odie "Script #{script_path} doesn't exist!" unless File.exist?(script_path)
 

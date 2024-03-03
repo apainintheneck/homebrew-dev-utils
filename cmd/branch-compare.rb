@@ -31,6 +31,8 @@ module Homebrew
     args = branch_compare_args.parse
     command = args.named
 
+    ENV.delete("HOMEBREW_INTERNAL_JSON_V3")
+
     HDUtils::BranchDiff.diff_output(
       command,
       quiet:         args.quiet?,

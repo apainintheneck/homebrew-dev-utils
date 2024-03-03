@@ -128,7 +128,7 @@ MACOS_API_DIR.mkdir
 
 Homebrew::SimulateSystem.with(os: :macos) do
   CORE_FORMULAE_NAMES.each do |formula_name|
-    formula = Formulary::FormulaAPILoader.new(formula_name).get_formula(:stable)
+    formula = Formulary::FromAPILoader.new(formula_name).get_formula(:stable)
 
     service_content =
       if formula.service.command?
@@ -151,7 +151,7 @@ LINUX_API_DIR.mkdir
 
 Homebrew::SimulateSystem.with(os: :linux) do
   CORE_FORMULAE_NAMES.each do |formula_name|
-    formula = Formulary::FormulaAPILoader.new(formula_name).get_formula(:stable)
+    formula = Formulary::FromAPILoader.new(formula_name).get_formula(:stable)
 
     next unless formula.service.command?
 

@@ -65,7 +65,7 @@ module HDUtils
           outfile
         end
 
-        diff_command = diff_command(*output_files.map(&:path), word_diff: word_diff)
+        diff_command = diff_command(*output_files.map(&:path), word_diff:)
         Homebrew.failed = true unless system(*diff_command)
 
         output_files.each(&:unlink)
@@ -127,7 +127,7 @@ module HDUtils
           tmp_dir
         end
 
-        diff_command = diff_command(*output_directories, word_diff: word_diff, stat: stat)
+        diff_command = diff_command(*output_directories, word_diff:, stat:)
         Homebrew.failed = true unless system(*diff_command)
       ensure
         # Return user to the correct branch in the event of a failure

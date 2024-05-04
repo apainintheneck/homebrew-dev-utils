@@ -25,11 +25,11 @@ module HDUtils
         end
 
         if error_count.zero?
-          puts "Read core formula and saw no failures!"
+          puts "Read core formulae and saw no failures!"
         else
           Homebrew.failed = true
           noun = (error_count == 1) ? "failure" : "failures"
-          puts "Read core formula and saw #{error_count} #{noun}!"
+          puts "Read core formulae and saw #{error_count} #{noun}!"
 
           unless quiet
             puts

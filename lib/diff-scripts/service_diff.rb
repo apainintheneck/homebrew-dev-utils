@@ -35,7 +35,7 @@ FORMULAE =
   when "formula"
     [Formulary.factory(COMMAND_ARG)]
   end
-  .select { |f| f.service? || f.plist }
+  .select(&:service?)
   .freeze
 
 FORMULA_FILES = FORMULAE.map(&:path).freeze
@@ -68,14 +68,9 @@ MACOS_DIR.mkdir
 Homebrew::SimulateSystem.with(os: :macos) do
   FORMULA_FILES.each do |formula_file|
     formula = Formulary.factory(formula_file)
+    next unless formula.service.command?
 
-    service_content =
-      if formula.service.command?
-        formula.service.to_plist
-      elsif formula.plist
-        formula.plist
-      end
-
+    service_content = formula.service.to_plist
     next if service_content.nil?
 
     outfile = MACOS_DIR/"#{formula.plist_name}.plist"
@@ -129,14 +124,9 @@ MACOS_API_DIR.mkdir
 Homebrew::SimulateSystem.with(os: :macos) do
   CORE_FORMULAE_NAMES.each do |formula_name|
     formula = Formulary::FromAPILoader.new(formula_name).get_formula(:stable)
+    next unless formula.service.command?
 
-    service_content =
-      if formula.service.command?
-        formula.service.to_plist
-      elsif formula.plist
-        formula.plist
-      end
-
+    service_content = formula.service.to_plist
     next if service_content.nil?
 
     outfile = MACOS_API_DIR/"#{formula.plist_name}.plist"

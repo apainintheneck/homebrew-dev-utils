@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "cli/parser"
+require "abstract_command"
 require_relative "../lib/hd_utils"
 
 module Homebrew

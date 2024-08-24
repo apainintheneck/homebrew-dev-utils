@@ -153,7 +153,7 @@ task :"missing-tests" do
       Missing integration tests for the following commands:
       #{missing_test_list}
 
-      Add tests to the #{INTEGRATON_TESTS} file.
+      Add tests to the #{INTEGRATION_TESTS_FILE} file.
     EOS
   end
 end

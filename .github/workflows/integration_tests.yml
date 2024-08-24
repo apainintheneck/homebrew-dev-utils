@@ -40,3 +40,5 @@ jobs:
     - run: rake test:generate-api-diff
 
     - run: rake test:service-diff
+
+    - run: rake test:startup-stats

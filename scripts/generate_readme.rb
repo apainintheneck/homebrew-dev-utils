@@ -41,20 +41,7 @@ File.open("#{__dir__}/../README.md.new", "w") do |out_file|
 
     ## Development
 
-    Linting and readme checks are run on each pull request while integration tests are only run weekly.
-
-    - Linting
-      - `rake lint:check`
-      - `rake lint:fix`
-    - Readme
-      - `rake readme:outdated`
-      - `rake readme:generate`
-    - Integration Tests
-      - `rake missing-tests`
-      - `rake test:all`
-      - `rake test:api-readall-test` (SLOW)
-      - `rake test:branch-compare`
-      - `rake test:generate-api-diff` (SLOW)
-      - `rake test:service-diff`
+    Linting and readme checks along with integration tests are run on each pull request.
+    All commands are run using the included Rakefile. Run `rake` to get the list of commands.
   EOS
 end

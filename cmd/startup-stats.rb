@@ -6,13 +6,12 @@ module Homebrew
       cmd_args do
         usage_banner "`startup-stats` [<option>]"
         description <<~EOS
-          Get information about the state of brew when a command
-          is called. This includes loaded constants, requires
-          and other such information.
+          Get information about the state of brew at the time a command is called.
+          This includes loaded constants, requires and other such information.
         EOS
 
         flag "--defined=", description: "Check if a constant is defined."
-        flag "--require=", description: "Benchmark a single require statement."
+        flag "--require=", description: "Diagnostics about a single require statement."
         switch "--list-requires", description: "List all requires made before this command was run."
         switch "--list-constants", description: "List all constants loaded before this command was run."
 
@@ -22,7 +21,7 @@ module Homebrew
           --list-requires
           --list-constants
         ].combination(2) do |combo|
-          conflicts *combo
+          conflicts(*combo)
         end
       end
 

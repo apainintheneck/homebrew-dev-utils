@@ -102,6 +102,26 @@ running other brew commands simultaneously.
   -h, --help                       Show this message.
 ```
 
+### brew startup-stats
+
+```
+Usage: brew startup-stats [option]
+
+Get information about the state of brew at the time a command is called. This
+includes loaded constants, requires and other such information.
+
+      --defined                    Check if a constant is defined.
+      --require                    Diagnostics about a single require statement.
+      --list-requires              List all requires made before this command
+                                   was run.
+      --list-constants             List all constants loaded before this command
+                                   was run.
+  -d, --debug                      Display any debugging information.
+  -q, --quiet                      Make some output more quiet.
+  -v, --verbose                    Make some output more verbose.
+  -h, --help                       Show this message.
+```
+
 ## Development
 
 Linting and readme checks are run on each pull request while integration tests are only run weekly.

@@ -112,12 +112,17 @@ namespace "test" do
     end
   end
 
+  task :"startup-stats" do
+    cmd "brew", "startup-stats", "--require", "tap"
+  end
+
   task :all do
     %w[
       test:api-readall-test
       test:branch-compare
       test:generate-api-diff
       test:service-diff
+      test:startup-stats
     ].each_with_index do |task, index|
       puts "--------------------" if index.positive?
       Rake::Task[task].invoke

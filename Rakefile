@@ -90,7 +90,7 @@ end
 
 namespace "test" do
   task :"api-readall-test" do
-    cmd "brew", "api-readall-test"
+    cmd "brew", "api-readall-test", "--verbose"
   end
 
   task :"branch-compare" do

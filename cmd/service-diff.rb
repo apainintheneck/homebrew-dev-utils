@@ -17,11 +17,9 @@ module Homebrew
         EOS
 
         flag "--formula=", description: "Run the diff on only one formula."
-        flag "--tap=", description: "Run the diff on only one tap."
         switch "--word-diff", description: "Show word diff instead of default line diff."
         switch "--stat", description: "Shows condensed output based on `git diff --stat`"
 
-        conflicts "--tap=", "--formula="
         conflicts "--word-diff", "--stat"
       end
 
@@ -32,9 +30,7 @@ module Homebrew
         odie "Script #{script_path} doesn't exist!" unless File.exist?(script_path)
 
         script_args =
-          if args.tap
-            ["tap", args.tap]
-          elsif args.formula
+          if args.formula
             ["formula", args.formula]
           else
             ["all"]

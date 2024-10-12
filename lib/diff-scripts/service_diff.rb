@@ -11,12 +11,11 @@ require "tap"
 # Expects:
 # 1. Command type from VALID_COMMAND_TYPES
 # 2. Command arg
-#    - for command type `tap` it should be the name of a tap
 #    - for command type `formula` it should be the name of a formula
 #    - for command type `all` it is NOT necessary
 COMMAND_TYPE, COMMAND_ARG, *extra = ARGV
 
-VALID_COMMAND_TYPES = %w[all tap formula].freeze
+VALID_COMMAND_TYPES = %w[all formula].freeze
 
 if VALID_COMMAND_TYPES.exclude?(COMMAND_TYPE)
   odie "Unknown command type `#{COMMAND_TYPE}`!"
@@ -29,9 +28,9 @@ end
 FORMULAE =
   case COMMAND_TYPE
   when "all"
-    Formula.all(eval_all: true)
-  when "tap"
-    Tap.fetch(COMMAND_ARG).formula_files.map(&Formulary.method(:factory))
+    CoreTap.instance.formula_names.map do |name|
+      Formulary.factory(name)
+    end
   when "formula"
     [Formulary.factory(COMMAND_ARG)]
   end

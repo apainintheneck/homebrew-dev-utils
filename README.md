@@ -92,7 +92,6 @@ Warning: This command runs git commands on the main brew repo. To be safe avoid
 running other brew commands simultaneously.
 
       --formula                    Run the diff on only one formula.
-      --tap                        Run the diff on only one tap.
       --word-diff                  Show word diff instead of default line diff.
       --stat                       Shows condensed output based on git
                                    diff --stat
